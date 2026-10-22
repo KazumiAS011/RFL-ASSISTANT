@@ -16,8 +16,7 @@
 
     <application
         android:label="RFL-ASSISTANT"
-        android:icon="@mipmap/ic_launcher"
-        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"        android:allowBackup="false"
         android:usesCleartextTraffic="true">
 
         <activity

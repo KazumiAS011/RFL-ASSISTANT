@@ -65,18 +65,25 @@ public class ServerService extends Service {
         Layout layout = new Layout(this);
         layout.ensureDirs();
         try {
-            File log = new File(layout.dataDir, "server.log");
-            ProcessBuilder pb = new ProcessBuilder(
-                    layout.nodeBin().getAbsolutePath(),
-                    layout.serverJs().getAbsolutePath());
-            pb.directory(layout.appDir);
-            pb.environment().put("PORT", "3000");
-            pb.environment().put("RFL_DATA_DIR", layout.dataDir.getAbsolutePath());
             File dl = new File(Environment.getExternalStoragePublicDirectory(
                     Environment.DIRECTORY_DOWNLOADS), "RFL-ASSISTANT");
             //noinspection ResultOfMethodCallIgnored
             dl.mkdirs();
+            // Log ditulis ke folder publik supaya bisa dibaca dari luar
+            // aplikasi (debugging); data aplikasi sendiri terkurung per-uid.
+            File log = new File(dl, "server.log");
+            ProcessBuilder pb = new ProcessBuilder(
+                    layout.nodeBin().getAbsolutePath(),
+                    layout.serverJs().getAbsolutePath());
+            pb.directory(layout.appDir);
+            pb.environment().put("PORT", "3007");
+            pb.environment().put("RFL_DATA_DIR", layout.dataDir.getAbsolutePath());
             pb.environment().put("RFL_DOWNLOAD_DIR", dl.getAbsolutePath());
+            pb.environment().put("LD_LIBRARY_PATH", layout.binDir.getAbsolutePath() + "/lib");
+            // OpenSSL bawaan lib Termux menunjuk /data/data/com.termux/... —
+            // uid aplikasi tidak boleh membaca ke sana dan node MATI saat
+            // start (OpenSSL configuration error). Config kosong = aman.
+            pb.environment().put("OPENSSL_CONF", "/dev/null");
             pb.redirectErrorStream(true);
             pb.redirectOutput(ProcessBuilder.Redirect.appendTo(log));
             proc = pb.start();
@@ -104,7 +111,9 @@ public class ServerService extends Service {
     }
 
     private void appendLog(Layout layout, String msg) {
-        try (FileOutputStream os = new FileOutputStream(new File(layout.dataDir, "server.log"), true)) {
+        try (FileOutputStream os = new FileOutputStream(new File(new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                "RFL-ASSISTANT"), "server.log"), true)) {
             os.write((msg + "\n").getBytes("UTF-8"));
         } catch (Exception ignored) { }
     }
@@ -119,7 +128,7 @@ public class ServerService extends Service {
                 ? new Notification.Builder(this, "rfl-server")
                 : new Notification.Builder(this);
         return b.setContentTitle("RFL-ASSISTANT")
-                .setContentText("Server jalan di HP ini (127.0.0.1:3000)")
+                .setContentText("Server jalan di HP ini (127.0.0.1:3007)")
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)
                 .build();
     }

@@ -28,9 +28,13 @@ import java.util.zip.ZipInputStream;
 public final class Updater {
     public static final String MANIFEST_URL =
             "https://raw.githubusercontent.com/KazumiAS011/RFL-ASSISTANT/main/manifest.json";
-    public static final String SHELL_VERSION = "1.0.0";
+    public static final String SHELL_VERSION = "1.0.9";
 
-    public interface Listener { void onStatus(String msg); }
+    public interface Listener {
+        void onStatus(String msg);
+        /** Kemajuan unduhan satu komponen, dalam byte. total <= 0 = tak diketahui. */
+        default void onDownload(String component, long downloaded, long total) { }
+    }
 
     private final Layout layout;
     private final Listener listener;
@@ -82,7 +86,7 @@ public final class Updater {
         File backup = new File(layout.stagingDir, name + "-old");
         File zipFile = new File(layout.stagingDir, name + ".zip");
         try {
-            download(comp.getString("url"), zipFile);
+            download(comp.getString("url"), zipFile, name, comp.optLong("size", 0));
             String sha = sha256(zipFile);
             if (!sha.equalsIgnoreCase(comp.getString("sha256"))) return false;
             deleteRec(stage);
@@ -173,16 +177,29 @@ public final class Updater {
         } finally { c.disconnect(); }
     }
 
-    private static void download(String url, File dest) throws Exception {
+    private void download(String url, File dest, String component, long declaredTotal) throws Exception {
         HttpURLConnection c = (HttpURLConnection) new URL(url).openConnection();
         c.setConnectTimeout(15000);
         c.setReadTimeout(120000);
         c.setInstanceFollowRedirects(true);
         try (InputStream in = c.getInputStream();
              FileOutputStream os = new FileOutputStream(dest)) {
+            long total = Math.max(c.getContentLengthLong(), declaredTotal);
             byte[] buf = new byte[64 * 1024];
+            long got = 0;
+            int lastPct = -1;
             int n;
-            while ((n = in.read(buf)) > 0) os.write(buf, 0, n);
+            while ((n = in.read(buf)) > 0) {
+                os.write(buf, 0, n);
+                got += n;
+                if (listener != null) {
+                    int pct = total > 0 ? (int) (got * 100 / total) : -1;
+                    if (pct != lastPct) {
+                        lastPct = pct;
+                        listener.onDownload(component, got, total);
+                    }
+                }
+            }
         } finally { c.disconnect(); }
     }
 
