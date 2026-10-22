@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RFL-ASSISTANT</title>
+<style>
+  body { font-family: sans-serif; margin: 24px; background: #111; color: #eee; }
+  .ok { color: #7ee787; } .card { background: #1c1c1e; border-radius: 12px; padding: 16px; }
+</style>
+</head>
+<body>
+  <h1>RFL-ASSISTANT</h1>
+  <div class="card">
+    <p>Kerangka aplikasi sudah jalan di HP ini. 🎉</p>
+    <p id="status">Menghubungi server…</p>
+    <p>Fitur-fitur (telusur, putar, unduh) akan masuk bertahap lewat
+       update berkas dari GitHub — tanpa mengganti APK.</p>
+  </div>
+<script>
+fetch('/api/ping').then(function (r) { return r.json() }).then(function (j) {
+  document.getElementById('status').innerHTML =
+    '<span class="ok">Server hidup</span> — versi app ' + j.app +
+    '<br>Folder unduhan: ' + j.downloadDir
+}).catch(function (e) {
+  document.getElementById('status').textContent = 'Server belum menjawab: ' + e.message
+})
+</script>
+</body>
+</html>

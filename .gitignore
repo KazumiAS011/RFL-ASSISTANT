@@ -1,0 +1,14 @@
+# Berkas lokal / hasil build — tidak ikut repo.
+local.properties
+**/build/
+*.apk
+*.aab
+
+# Keystore & kredensial penandatanganan — JANGAN pernah commit.
+*.jks
+*.keystore
+keystore.properties
+
+# Payload biner (node/ffmpeg + app awal) dirangkai saat build APK,
+# bukan disimpan di repo.
+shell/app/src/main/assets/payload.zip

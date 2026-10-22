@@ -1,0 +1,43 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'id.rfl.assistant'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'id.rfl.assistant'
+        // minSdk 24: jangkauan HP user luas (Android 7+).
+        minSdk 24
+        // targetSdk 28 DISENGAJA (pola Termux): hanya target <= 28 yang
+        // boleh mengeksekusi biner dari folder data aplikasi — syarat agar
+        // node/ffmpeg hasil update dari GitHub bisa dijalankan.
+        targetSdk 28
+        // Versi CANGKANG. Dirancang tetap 1.0.0 untuk waktu yang sangat
+        // lama; semua perubahan berjalan lewat update berkas komponen.
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            // Penandatanganan rilis memakai keystore Andika (di luar repo):
+            // salin keystore.properties.contoh -> keystore.properties.
+            signingConfig signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    // payload.zip berisi biner (node/ffmpeg) — jangan dikompres ulang.
+    aaptOptions {
+        noCompress 'zip'
+    }
+}
+
+dependencies {
+    // Tanpa dependensi luar: cangkang hanya memakai API bawaan Android.
+}

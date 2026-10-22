@@ -1,0 +1,5 @@
+// Proyek cangkang RFL-ASSISTANT. Versi AGP disesuaikan dengan Gradle +
+// Android SDK yang tersedia di HP build (Termux); naikkan hati-hati.
+plugins {
+    id 'com.android.application' version '8.1.4' apply false
+}
