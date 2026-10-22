@@ -1,1 +1,12 @@
-{"components":{"app":{"sha256":"CONTOH-isi-sha256-zip-rilis","size":0,"url":"https://github.com/KazumiAS011/RFL-ASSISTANT/releases/download/app-0.1.0/app-0.1.0.zip","version":"0.1.0"},"ffmpeg":{"sha256":"CONTOH-isi-sha256-zip-rilis","size":0,"url":"https://github.com/KazumiAS011/RFL-ASSISTANT/releases/download/ffmpeg-9.0.2/ffmpeg-9.0.2.zip","version":"9.0.2"},"node":{"sha256":"CONTOH-isi-sha256-zip-rilis","size":0,"url":"https://github.com/KazumiAS011/RFL-ASSISTANT/releases/download/node-20.x/node-20.x.zip","version":"20.x"}},"minShell":"1.0.0","notes":"CONTOH format — nilai url/sha256/size diisi saat rilis nyata diterbitkan."}
+{
+  "minShell": "1.0.10",
+  "components": {
+    "app": {
+      "version": "0.2.0",
+      "format": "file",
+      "url": "https://raw.githubusercontent.com/KazumiAS011/RFL-ASSISTANT/main/app/server.js",
+      "sha256": "e60ed71d137fa57106f49628d74097e326cbedb1260a1d89e59446254e28c6e6",
+      "size": 14571
+    }
+  }
+}

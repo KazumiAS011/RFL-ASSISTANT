@@ -28,7 +28,7 @@ import java.util.zip.ZipInputStream;
 public final class Updater {
     public static final String MANIFEST_URL =
             "https://raw.githubusercontent.com/KazumiAS011/RFL-ASSISTANT/main/manifest.json";
-    public static final String SHELL_VERSION = "1.0.9";
+    public static final String SHELL_VERSION = "1.0.10";
 
     public interface Listener {
         void onStatus(String msg);
@@ -64,7 +64,10 @@ public final class Updater {
                 String have = state.optString(name, "0");
                 if (compare(want, have) <= 0) continue;
                 status("Memperbarui " + name + " " + have + " -> " + want + " …");
-                if (installComponent(name, comp)) {
+                boolean ok = "file".equals(comp.optString("format", "zip"))
+                        ? installFileComponent(name, comp)
+                        : installComponent(name, comp);
+                if (ok) {
                     state.put(name, want);
                     changed = true;
                     status(name + " kini " + want + ".");
@@ -113,6 +116,48 @@ public final class Updater {
         } finally {
             //noinspection ResultOfMethodCallIgnored
             zipFile.delete();
+        }
+    }
+
+    /**
+     * Komponen format "file": satu berkas unduhan dipasang langsung sebagai
+     * app/server.js (cadangan 1 generasi di staging). Hanya untuk "app" —
+     * cara app diperbarui selamanya: satu berkas teks dari repo.
+     */
+    private boolean installFileComponent(String name, JSONObject comp) {
+        if (!name.equals("app")) return false;
+        File target = new File(layout.appDir, "server.js");
+        File tmp = new File(layout.stagingDir, name + "-file.bin");
+        File backup = new File(layout.stagingDir, name + "-file-old.js");
+        try {
+            download(comp.getString("url"), tmp, name, comp.optLong("size", 0));
+            String sha = sha256(tmp);
+            if (!sha.equalsIgnoreCase(comp.getString("sha256"))) return false;
+            //noinspection ResultOfMethodCallIgnored
+            backup.delete();
+            if (target.exists() && !copyFile(target, backup)) return false;
+            if (!copyFile(tmp, target)) {
+                if (backup.exists()) copyFile(backup, target);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            //noinspection ResultOfMethodCallIgnored
+            tmp.delete();
+        }
+    }
+
+    private static boolean copyFile(File from, File to) {
+        try (FileInputStream in = new FileInputStream(from);
+             FileOutputStream out = new FileOutputStream(to)) {
+            byte[] buf = new byte[64 * 1024];
+            int n;
+            while ((n = in.read(buf)) > 0) out.write(buf, 0, n);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
