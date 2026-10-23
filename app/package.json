@@ -1,5 +1,5 @@
 {
-  "description": "Aplikasi JS RFL-ASSISTANT (komponen app \u2014 diupdate lewat GitHub, bukan bagian dari APK).",
+  "description": "Aplikasi JS RFL-ASSISTANT (komponen app — diupdate lewat GitHub, bukan bagian dari APK).",
   "main": "server.js",
   "name": "rfl-assistant-app",
   "private": true,
