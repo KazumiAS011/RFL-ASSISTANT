@@ -28,7 +28,7 @@ import java.util.zip.ZipInputStream;
 public final class Updater {
     public static final String MANIFEST_URL =
             "https://raw.githubusercontent.com/KazumiAS011/RFL-ASSISTANT/main/manifest.json";
-    public static final String SHELL_VERSION = "1.0.10";
+    public static final String SHELL_VERSION = "1.0.12";
 
     public interface Listener {
         void onStatus(String msg);

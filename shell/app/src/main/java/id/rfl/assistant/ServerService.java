@@ -66,7 +66,7 @@ public class ServerService extends Service {
         layout.ensureDirs();
         try {
             File dl = new File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOWNLOADS), "RFL-ASSISTANT");
+                    Environment.DIRECTORY_DOWNLOADS), "RFL-KSPULLX");
             //noinspection ResultOfMethodCallIgnored
             dl.mkdirs();
             // Log ditulis ke folder publik supaya bisa dibaca dari luar
@@ -113,7 +113,7 @@ public class ServerService extends Service {
     private void appendLog(Layout layout, String msg) {
         try (FileOutputStream os = new FileOutputStream(new File(new File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                "RFL-ASSISTANT"), "server.log"), true)) {
+                "RFL-KSPULLX"), "server.log"), true)) {
             os.write((msg + "\n").getBytes("UTF-8"));
         } catch (Exception ignored) { }
     }
@@ -127,7 +127,7 @@ public class ServerService extends Service {
         Notification.Builder b = Build.VERSION.SDK_INT >= 26
                 ? new Notification.Builder(this, "rfl-server")
                 : new Notification.Builder(this);
-        return b.setContentTitle("RFL-ASSISTANT")
+        return b.setContentTitle("RFL-KSPULLX")
                 .setContentText("Server jalan di HP ini (127.0.0.1:3007)")
                 .setSmallIcon(android.R.drawable.sym_def_app_icon)
                 .build();
