@@ -2,11 +2,11 @@
   "minShell": "1.0.12",
   "components": {
     "app": {
-      "version": "0.4.8",
+      "version": "0.4.9",
       "format": "file",
       "url": "https://raw.githubusercontent.com/KazumiAS011/RFL-ASSISTANT/main/app/server.js",
-      "sha256": "655de5e33e7d2a3a2102947585976e0ea94ccbf1b23460a7b58c65a229e19203",
-      "size": 1801086
+      "sha256": "900e944d852cb6780079d922815bf98686e9c39e839bc42fd364f83aa72eb819",
+      "size": 1802134
     }
   }
 }
